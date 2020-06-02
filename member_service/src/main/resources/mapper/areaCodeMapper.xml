@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.linruchang.member_service.dao.AreaCodeDao">
+
+
+
+    <select id="findByParentId" parameterType="int" resultType="UmsAreaCode">
+        select * from ums_area_code
+        <choose>
+            <when test="parent_id == -1">
+                where ISNULL(parent_id);
+            </when>
+            <otherwise>
+                where parent_id = #{parent_id}
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

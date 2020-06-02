@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.linruchang.order_service.dao.OrderMasterDao">
+
+
+<!--    <insert id="addOrder" parameterType="OmsOrderMaster" useGeneratedKeys="true" keyColumn="id" keyProperty="id">-->
+<!--        insert into-->
+<!--	        oms_order_master(user_id,  address_id, order_id,total_money,-->
+<!--                <if test="pay_status == 1">-->
+<!--                    transaction_id,  payment_time,-->
+<!--                </if>-->
+<!--            order_status, pay_status, create_time, update_time)-->
+
+<!--	        VALUES(#{user_id},  #{address_id}, concat(DATE_FORMAT(now(),'%Y%m%d%H%i%s'), #{address_id}, #{user_id}),  #{total_money},-->
+<!--                <if test="pay_status == 1">-->
+<!--                    concat( DATE_FORMAT(now(),'%Y%m%d%H%i%s'), #{address_id},  #{user_id}), now(),-->
+<!--                </if>-->
+<!--	        #{order_status}, #{pay_status}, now(), now() );-->
+<!--    </insert>-->
+    <insert id="addOrder" parameterType="OmsOrderMaster" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into
+	        oms_order_master(user_id,  address_id, order_id,total_money,
+                <if test="pay_status == 1">
+                    transaction_id,  payment_time,
+                </if>
+            order_status, pay_status, create_time, update_time)
+
+	        VALUES(#{user_id},  #{address_id}, concat(DATE_FORMAT(now(),'%Y%m%d%H%i%s'), #{address_id}, #{user_id}),  sumOrderTotalPrice(#{productIds}, #{productNums} ,','),
+                <if test="pay_status == 1">
+                    concat( DATE_FORMAT(now(),'%Y%m%d%H%i%s'), #{address_id},  #{user_id}), now(),
+                </if>
+	        #{order_status}, #{pay_status}, now(), now() )
+    </insert>
+
+
+<!--    Integer id;-->
+<!--    Integer user_id;-->
+<!--    Integer address_id;-->
+<!--    String order_id;-->
+<!--    String transaction_id;-->
+<!--    Integer order_status;-->
+<!--    Integer pay_status;-->
+<!--    Integer total_money;-->
+<!--    Date create_time;-->
+<!--    Date update_time;-->
+<!--    Date payment_time;-->
+
+    <resultMap id="OmsOrderMasterMap" type="OmsOrderMaster">
+        <id column="id" property="id"></id>
+        <result column="user_id" property="user_id"></result>
+        <result column="address_id" property="address_id"></result>
+        <result column="order_id" property="order_id"></result>
+        <result column="transaction_id" property="transaction_id"></result>
+        <result column="order_status" property="order_status"></result>
+        <result column="pay_status" property="pay_status"></result>
+        <result column="total_money" property="total_money"></result>
+        <result column="create_time" property="create_time"></result>
+        <result column="update_time" property="update_time"></result>
+        <result column="payment_time" property="payment_time"></result>
+        <collection property="omsOrderDetails" fetchType="eager" column="id" select="top.linruchang.order_service.dao.OrderDetailDao.findByOrderId" ofType="OmsOrderDetail" javaType="ArrayList"></collection>
+    </resultMap>
+
+    <select id="findById" resultMap="OmsOrderMasterMap" parameterType="int">
+
+        select * from oms_order_master where id = #{id}
+
+    </select>
+
+    <select id="findByUserId" resultMap="OmsOrderMasterMap" >
+        select * from oms_order_master where user_id = #{user_id}
+        <if test="all == false or all == null">
+            and order_status != -1
+        </if>
+    </select>
+
+    <select id="findAll"  resultMap="OmsOrderMasterMap" parameterType="top.linruchang.domain.QueryParam">
+        select * from oms_order_master
+
+        <where>
+            <if test="order_id != null and order_id != ''">
+                and order_id = #{order_id}
+            </if>
+
+            <if test="dates != null and dates.size == 2">
+                and create_time BETWEEN STR_TO_DATE(#{dates[0]},'%Y-%m-%d') AND STR_TO_DATE(#{dates[1]},'%Y-%m-%d')
+            </if>
+        </where>
+    </select>
+
+
+<!--    Integer id;-->
+<!--    Integer user_id;-->
+<!--    Integer address_id;-->
+<!--    String order_id;-->
+<!--    String transaction_id;-->
+<!--    Integer order_status;-->
+<!--    Integer pay_status;-->
+<!--    Integer total_money;-->
+<!--    Date create_time;-->
+<!--    Date update_time;-->
+<!--    Date payment_time;-->
+<!--    String productIds;-->
+<!--    String productNums;-->
+
+    <update id="updataOrderMasterStatus" parameterType="OmsOrderMaster">
+        update oms_order_master
+
+         <set>
+             <if test="order_status != null">
+                 order_status = #{order_status},
+             </if>
+             <if test="pay_status != null">
+                 pay_status = #{pay_status},
+             </if>
+             <if test="order_status == 1">
+                 transaction_id = concat( DATE_FORMAT(now(),'%Y%m%d%H%i%s'), address_id,  user_id),
+                 payment_time = now(),
+             </if>
+             <if test="true">
+                 update_time = now(),
+             </if>
+         </set>
+         where id = #{id}
+    </update>
+
+
+    <delete id="deleteByOrderId" parameterType="int">
+        delete from oms_order_master where id = #{id}
+    </delete>
+
+</mapper>

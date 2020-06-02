@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.linruchang.product_service.dao.DetailDao">
+
+
+    <select id="findById" resultType="PmsProductDetailinfo">
+        select pms_product_detailinfo.*, (select name
+	            from pms_product_type_brand, pms_product_brand
+	            where brand_id = pms_product_brand.id and product_id = pms_product_detailinfo.id) brand_name
+            from  pms_product_detailinfo
+            where id = #{id}
+    </select>
+
+
+    <update id="updateProductDetail" parameterType="PmsProductDetailinfo">
+
+        update pms_product_detailinfo
+        <set>
+
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+
+            <if test="slide_show_imgs != null and slide_show_imgs != ''">
+                slide_show_imgs = #{slide_show_imgs},
+            </if>
+
+
+            <if test="graphic_details_imgs != null and graphic_details_imgs != ''">
+                graphic_details_imgs = #{graphic_details_imgs},
+            </if>
+
+            <if test="freight != null">
+                freight = #{freight},
+            </if>
+
+        </set>
+
+        where id = #{id};
+
+    </update>
+
+
+</mapper>

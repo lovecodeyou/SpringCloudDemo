@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.linruchang.member_service.dao.RoleDao">
+
+
+    <resultMap id="myRoleMap" type="UmsUserRole">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="describe" column="describe"></result>
+        <result property="menuIds" column="menuIds"></result>
+        <collection property="umsRoleMenus"  column="id" ofType="UmsRoleMenu" javaType="List" select="top.linruchang.member_service.dao.MenuDao.findByRoleId"></collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="myRoleMap">
+        SELECT * FROM ums_user_role
+    </select>
+
+    <delete id="deleteRoleByRoleId" parameterType="int">
+        delete from ums_user_role where id = #{role_id};
+    </delete>
+
+
+    <insert id="addRole" parameterType="UmsUserRole">
+
+        INSERT INTO ums_user_role(`NAME`,`DESCRIBE`) VALUES (#{name}, #{describe});
+
+    </insert>
+
+
+    <update id="updateRoleByRoleId" parameterType="UmsUserRole">
+        update ums_user_role
+        <set>
+            <if test="name != null and name != ''">
+                `name` = #{name},
+            </if>
+            <if test="describe != null and describe != ''">
+                `describe` = #{describe},
+            </if>
+            <if test="menuIds != null and menuIds != ''">
+                `menuIds` = #{menuIds},
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+
+
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.linruchang.adv_service.dao.AdvDao">
+
+    <select id="findAllAdvs" resultType="PmsProductAdv">
+        SELECT * FROM pms_product_adv
+    </select>
+
+<!--    <select id="findProductById" resultType="product" parameterType="Integer">-->
+<!--        SELECT * FROM product where id = #{productId}-->
+<!--    </select>-->
+
+</mapper>

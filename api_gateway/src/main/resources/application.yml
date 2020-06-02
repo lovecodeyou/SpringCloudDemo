@@ -1,0 +1,60 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:1111/eureka/
+#    registry-fetch-interval-seconds: 1
+
+  instance:
+    instance-id: apiGateway
+    prefer-ip-address: true
+
+
+server:
+  port: 8080
+spring:
+  application:
+    name: apiGateway
+  servlet:
+    multipart:
+      location: C:/Users/lrc/Desktop/测试/临时路径
+
+
+ribbon:
+  ReadTimeout: 90000
+  ConnectTimeout: 90000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+
+hystrix:
+  command:
+    c4i-store:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 90000
+            ribbon:
+              ReadTimeout: 90000
+              ConnectTimeout: 90000
+
+zuul:
+  routes:
+    productService: apiGateway/productService/**
+    orderService: apiGateway/orderService/**
+    memberService: apiGateway/memberService/**
+    advService: apiGateway/advService/**
+    authService: apiGateway/authService/**
+
+#  ignored-patterns: /*Service/**
+  sensitive-headers:
+
+
+top:
+  linruchang:
+    publicKeyLocation: E:\\IDEA2019\\workspace\\springclouddemo1\\key\\public-key.txt
+    privateKeyLocation: E:\\IDEA2019\\workspace\\springclouddemo1\\key\\private-key.txt
+    seed: 123456
+    excludeURI: /apiGateway/authService/login,/apiGateway/memberService/members/login,/apiGateway/memberService/members/register,/apiGateway/productService,/apiGateway/advService,/apiGateway/authService
+
+

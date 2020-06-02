@@ -1,0 +1,21 @@
+eureka:
+  client:
+    #将可用区映射到与eureka服务器通信的完全限定URL列表
+    service-url:
+      defaultZone: http://127.0.0.1:1111/eureka/
+
+
+
+spring:
+  application:
+    name: productService
+  cloud:
+    config:
+      discovery:
+        service-id: configServer
+        enabled: true
+      # 根据这个可以改微服务的配置信息，开发环境或者上线环境等等。非常的方便
+      profile: test
+      label: master
+
+

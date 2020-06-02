@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.linruchang.product_service.dao.TypeDao">
+
+    <resultMap id="MyPmsProductType" type="PmsProductType">
+
+        <result column="tid" property="id"></result>
+        <result column="type_name" property="name"></result>
+        <result column="img" property="img"></result>
+
+        <collection property="products"  ofType="top.linruchang.product_service.domain.Product">
+            <id column="id" property="id"></id>
+            <result column="type_id" property="type_id"></result>
+            <result column="brand_id" property="brand_id"></result>
+            <result column="name" property="name"></result>
+            <result column="specifications" property="specifications"></result>
+            <result column="current_price" property="current_price"></result>
+            <result column="history_price" property="history_price"></result>
+            <result column="special_information" property="special_information"></result>
+            <result column="img_url" property="img_url"></result>
+        </collection>
+    </resultMap>
+
+    <select id="findAll" resultMap="MyPmsProductType">
+        select
+            pms_product_type.id tid,
+            pms_product_type.`name` type_name,
+            pms_product_adv.img img,
+            pms_product.*
+        from pms_product_type,pms_product,pms_product_adv
+        where pms_product.type_id = pms_product_type.id and pms_product_adv.type_id = pms_product_type.id
+    </select>
+
+
+    <select id="findById" resultMap="MyPmsProductType">
+       select
+            pms_product_type.id tid,
+            pms_product_type.`name` type_name,
+            pms_product_adv.img img,
+            pms_product.*
+        from (pms_product_type left JOIN pms_product on pms_product.type_id = pms_product_type.id)
+            left JOIN pms_product_adv on pms_product_adv.type_id = pms_product_type.id
+		where  pms_product_type.id= #{type_id}
+    </select>
+
+
+    <select id="findAllOnlyType" resultType="PmsProductType">
+        select * from pms_product_type
+    </select>
+
+
+</mapper>

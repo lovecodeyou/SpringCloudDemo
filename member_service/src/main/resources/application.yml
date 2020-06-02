@@ -1,0 +1,50 @@
+
+eureka:
+  client:
+    #��������ӳ�䵽��eureka������ͨ�ŵ���ȫ�޶�URL�б�
+    service-url:
+      defaultZone: http://127.0.0.1:1111/eureka/
+
+  #    register-with-eureka: false
+  #    fetch-registry: false
+  instance:
+    #��ȡҪע�ᵽeureka�ĸ�ʵ����ΨһID(��appName��Χ��)��
+    instance-id: memberService
+    # ��ʾ�ڲ²�������ʱ����������IP��ַӦ���ڲο�����ϵͳ������������ı�־�� -eureka�н�洢Ip��ַ
+    prefer-ip-address: true
+
+
+server:
+  port: 2020
+spring:
+
+  application:
+    name: memberService
+
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/graduation_design?serverTimezone=UTC&useSSL=false
+#    url: jdbc:mysql://localhost:3306/springcloudproject?serverTimezone=UTC
+    driver-class-name: com.mysql.jdbc.Driver
+
+
+mybatis:
+  type-aliases-package: top.linruchang.member_service.domain
+  configuration:
+    cache-enabled: true
+    lazy-loading-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mapper/*Mapper.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+
+
+context:
+  listener:
+    classes: top.linruchang.member_service.config.ApplicationEventListener

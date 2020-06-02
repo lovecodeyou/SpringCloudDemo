@@ -1,0 +1,40 @@
+server:
+  port: 4040
+
+eureka:
+  instance:
+    instance-id: productService
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:1111/eureka/
+
+
+spring:
+  application:
+    name: productService
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/graduation_design?serverTimezone=UTC&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+  servlet:
+    multipart:
+      location: C:\\Users\\lrc\\Desktop\\测试\\临时路径
+      max-file-size: 1MB
+      file-size-threshold: 1MB
+
+mybatis:
+  type-aliases-package: top.linruchang.product_service.domain
+  mapper-locations: classpath:mapper/*Mapper.xml
+  configuration:
+    cache-enabled: true
+    lazy-loading-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+

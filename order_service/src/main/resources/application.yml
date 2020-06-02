@@ -1,0 +1,61 @@
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:1111/eureka/
+
+  instance:
+    instance-id: orderService
+    prefer-ip-address: true
+
+
+
+server:
+  port: 6060
+spring:
+  application:
+    name: orderService
+
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/graduation_design?serverTimezone=UTC&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+
+
+mybatis:
+  type-aliases-package: top.linruchang.order_service.domain
+  configuration:
+    cache-enabled: true
+    lazy-loading-enabled: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mapper/*Mapper.xml
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+
+productService:
+  ribbon:
+    NFLoadBlancerRuleClassName: com.netflix.loadbalancer.RandomRule
+    ConnectTimeout: 60000
+    ReadTimeout: 60000
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+
+feign:
+  hystrix:
+    enabled: true

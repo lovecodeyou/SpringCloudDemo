@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.linruchang.member_service.dao.AddressDao">
+
+
+    <select id="findByUserId" parameterType="int" resultType="UmsUserReceiveAddress">
+        select
+	        ums_user_receive_address.*,
+	        (select name  from ums_area_code where ums_area_code.id = provinceId ) provinceName,
+	        (select name  from ums_area_code where ums_area_code.id = cityId ) cityName,
+	        (select name  from ums_area_code where ums_area_code.id = areaId ) areaName
+        from ums_user_receive_address
+	    where userId = #{user_id};
+    </select>
+
+
+	<select id="findById" parameterType="int" resultType="UmsUserReceiveAddress">
+        select
+	        ums_user_receive_address.*,
+	        (select name  from ums_area_code where ums_area_code.id = provinceId ) provinceName,
+	        (select name  from ums_area_code where ums_area_code.id = cityId ) cityName,
+	        (select name  from ums_area_code where ums_area_code.id = areaId ) areaName
+        from ums_user_receive_address
+	    where id = #{id};
+    </select>
+
+
+    <delete id="deleteByIds" >
+		delete from ums_user_receive_address where
+
+		<foreach collection="addressIds" open="id in (" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+
+	</delete>
+
+
+    <update id="changDefaultAddress">
+		update ums_user_receive_address  set  default_address_flag = #{addressState} where id = #{addressId};
+	</update>
+
+
+    <insert id="addAddress" parameterType="UmsUserReceiveAddress" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into ums_user_receive_address(userId, phone, detail_address, receiver)
+			values (#{userId},#{phone}, #{detail_address}, #{receiver} );
+	</insert>
+
+    <update id="changAddressCodes" parameterType="UmsUserReceiveAddress">
+		update ums_user_receive_address
+			<set>
+				<if test="provinceName != null and provinceName != ''">
+					provinceId = (select id from ums_area_code where name like '%${provinceName}%'),
+				</if>
+				<if test="cityName != null and cityName != ''">
+					cityId = (select id from ums_area_code where name like '%${cityName}%' and parent_id = provinceId),
+				</if>
+				<if test="areaName != null and areaName != ''">
+					areaId = (select id from ums_area_code where name like '%${areaName}%' and parent_id = cityId),
+				</if>
+			</set>
+		where id = #{id};
+	</update>
+
+
+	<insert id="addAddress2" parameterType="UmsUserReceiveAddress" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+		insert into ums_user_receive_address(userId, phone, detail_address, receiver
+			<trim prefix="," suffix=")"  suffixOverrides=",">
+				<if test="provinceId != null">
+					provinceId,
+				</if>
+				<if test="cityId != null">
+					cityId,
+				</if>
+				<if test="areaId != null">
+					areaId,
+				</if>
+			</trim>
+
+
+			values (#{userId},#{phone}, #{detail_address}, #{receiver}
+			<trim prefix="," suffix=")"  suffixOverrides=",">
+				<if test="provinceId != null">
+					#{provinceId},
+				</if>
+				<if test="cityId != null">
+					#{cityId},
+				</if>
+				<if test="areaId != null">
+					#{areaId},
+				</if>
+			</trim>
+	</insert>
+
+	<update id="updateAddressByAddressId" parameterType="UmsUserReceiveAddress">
+
+		update ums_user_receive_address
+		<set>
+			<if test="detail_address != null and detail_address != ''">
+				detail_address = #{detail_address},
+			</if >
+			<if test="provinceId != null">
+				provinceId = #{provinceId}, cityId = #{cityId}, areaId = #{areaId}, detail_address = #{detail_address}
+			</if>
+		</set>
+
+		where id = #{id};
+
+	</update>
+
+</mapper>
